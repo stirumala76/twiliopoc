@@ -44,13 +44,13 @@ public class TwilioServlet extends HttpServlet {
 	        callers.put("14158675311", "Virgil");
 
 	        String fromNumber = request.getParameter("From");
-	        System.out.println("fromNumber"+fromNumber);
+	       
 	        
 	        String knownCaller = callers.get(fromNumber);
 	        String message;
 	        if (knownCaller == null) {
 	            // Use a generic message
-	            message = "Hello Sridhar";
+	            message = "Hello Money";
 	        } else {
 	            // Use the caller's name
 	            message = "Hello " + knownCaller;
