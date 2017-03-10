@@ -1,6 +1,7 @@
 package com.test;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -35,17 +36,36 @@ public class Twilio extends HttpServlet {
 	//	response.getWriter().append("Served at: ").append(request.getContextPath());
 		
 		 // Create a TwiML response and add our friendly message.
-        response.setContentType("application/xml");
-		VoiceResponse voiceResponse = new VoiceResponse.Builder()
-                .say(new Say.Builder("Hello Monkey").build())
+		 // Create a dict of people we know.
+        HashMap<String, String> callers = new HashMap<String, String>();
+        callers.put("+14158675309", "Curious George");
+        callers.put("+14158675310", "Boots");
+        callers.put("+14158675311", "Virgil");
+
+        String fromNumber = request.getParameter("From");
+        String knownCaller = callers.get(fromNumber);
+        String message;
+        if (knownCaller == null) {
+            // Use a generic message
+            message = "Hello Sridhar";
+        } else {
+            // Use the caller's name
+            message = "Hello " + knownCaller;
+        }
+
+        // Create a TwiML response and add our friendly message.
+        VoiceResponse twiml = new VoiceResponse.Builder()
+                .say(new Say.Builder(message).build())
                 .build();
 
-
+        response.setContentType("application/xml");
         try {
-            response.getWriter().print(voiceResponse.toXml());
+            response.getWriter().print(twiml.toXml());
         } catch (TwiMLException e) {
             e.printStackTrace();
         }
+        
+        
 	}
 
 	/**
@@ -55,5 +75,38 @@ public class Twilio extends HttpServlet {
 		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
+	
+	 @Override
+	    public void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	        // Create a dict of people we know.
+	        HashMap<String, String> callers = new HashMap<String, String>();
+	        callers.put("+14158675309", "Curious George");
+	        callers.put("+14158675310", "Boots");
+	        callers.put("+14158675311", "Virgil");
+
+	        String fromNumber = request.getParameter("From");
+	        String knownCaller = callers.get(fromNumber);
+	        String message;
+	        if (knownCaller == null) {
+	            // Use a generic message
+	            message = "Hello Monkey";
+	        } else {
+	            // Use the caller's name
+	            message = "Hello " + knownCaller;
+	        }
+
+	        // Create a TwiML response and add our friendly message.
+	        VoiceResponse twiml = new VoiceResponse.Builder()
+	                .say(new Say.Builder(message).build())
+	                .build();
+
+	        response.setContentType("application/xml");
+	        try {
+	            response.getWriter().print(twiml.toXml());
+	        } catch (TwiMLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	
 
 }
